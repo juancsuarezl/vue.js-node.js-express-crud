@@ -1,5 +1,5 @@
 # vue.js-node.js-express-crud
-A typical CRUD using Vue.js, Vuetify, Node.js and Express
+A typical CRUD using Vue.js, Vuetify, Node.js, Express and MySQL.
 Steps: 
 1.npm install 
 2.Change your Database settings (app.js) 
