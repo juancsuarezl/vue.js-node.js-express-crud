@@ -73,7 +73,7 @@ app.put('/clientes/:id', (req,res) =>{
     let email = req.body.email;
     let payDay = req.body.payDay;
     
-    let sql = 'UPDATE clientes SET name = ?, address = ?, phone = ?, email = ?, payDay = ?, WHERE id = ?';
+    let sql = 'UPDATE clientes SET name = ?, address = ?, phone = ?, email = ?, payDay = ? WHERE id = ?';
     connection.query(sql, [name, address, phone, email, payDay, id], (error, results)=>{
         if(error){
             throw error;
