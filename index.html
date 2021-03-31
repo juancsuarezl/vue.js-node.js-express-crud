@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.2/dist/sweetalert2.min.css">  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <style>
+  #app{
+      background-color:#CFD8DC;      
+  }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <v-app>
+      <v-main> 
+        
+        <h2 class="text-center mt-3">Bienvenid@ al Sistema de Gestión de Clientes</h2>
+       
+       <!-- Botón "Alta de Cliente" -->                
+        <v-card class="mx-auto mt-5" color="transparent" max-width="1300" elevation="0">            
+        <v-btn class="mx-4 raised" style="background-color:#57c5f5 ;" @click="formNuevo()">Alta de Cliente</v-btn>
+        
+        <!-- Tabla y formulario -->
+        <v-simple-table class="mt-5">
+            <template v-slot:default>
+                <thead class="text-center">
+                    <tr class="blue darken-2">
+                        <th class="white--text">ID</th>
+                        <th class="white--text">NOMBRE COMPLETO</th>
+                        <th class="white--text">DIRECCIÓN</th>
+                        <th class="white--text">TELÉFONO</th>
+                        <th class="white--text">CORREO ELECTRÓNICO</th>
+                        <th class="white--text">DÍA DE PAGO</th>
+                        <th class="white--text text-center">MODIFICACIONES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="cliente in clientes" :key="cliente.id">
+                    <td>{{ cliente.id }}</td>
+                    <td>{{ cliente.name }}</td>
+                    <td>{{ cliente.address }}</td>
+                    <td>{{ cliente.phone }}</td>
+                    <td>{{ cliente.email }}</td>
+                    <td>{{ cliente.payDay }}</td>
+                    <td>
+                      <div class="text-center">
+                        <v-btn class="blue mx-2" dark small fab  @click="formEditar(cliente.id, cliente.name, cliente.address, cliente.phone, cliente.email, cliente.payDay )"><v-icon>mdi-pencil</v-icon></v-btn>
+                        <v-btn class="error mx-2" fab dark small @click="borrar(cliente.id)"><v-icon>mdi-delete</v-icon></v-btn>
+                      </div>  
+                      </td>
+                    </tr>
+                </tbody>
+            </template>
+        </v-simple-table>
+        </v-card>        
+      <!-- Componente de Diálogo para CREAR y EDITAR -->
+      <v-dialog v-model="dialog" max-width="700">        
+        <v-card>
+          <v-card-title class="blue darken-4 white--text">Nuevo Cliente</v-card-title>    
+          <v-card-text>            
+            <v-form>             
+              <v-container>
+                <v-row>
+                  <input v-model="cliente.id" hidden></input>
+                  <v-col cols="12" md="4">
+                    <v-text-field v-model="cliente.name" label="Nombre" solo required>{{cliente.name}}</v-text-field>
+                  </v-col>
+                  <v-col cols="12" md="4">
+                    <v-text-field v-model="cliente.address" label="Dirección" type="text" solo required></v-text-field>
+                  </v-col>
+                  <v-col cols="12" md="4">
+                    <v-text-field v-model="cliente.phone" label="Teléfono" type="tel" solo required></v-text-field>
+                  </v-col>
+                  <v-col cols="12" md="4">
+                    <v-text-field v-model="cliente.email" label="Email" type="text" solo required></v-text-field>
+                  </v-col>
+                  <v-col cols="12" md="4">
+                    <v-text-field v-model="cliente.payDay" label="Día de Pago" type="tel" solo required></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>            
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn @click="dialog=false" color="grey" dark>Cancelar</v-btn>
+            <v-btn @click="guardar()" type="submit" color="blue accent-3" dark>Guardar</v-btn>
+          </v-card-actions>
+          </v-form>
+        </v-card>
+      </v-dialog>
+      </v-main>
+    </v-app>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.js" integrity="sha512-nqIFZC8560+CqHgXKez61MI0f9XSTKLkm0zFVm/99Wt0jSTZ7yeeYwbzyl0SGn/s8Mulbdw+ScCG41hmO2+FKw==" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.2/dist/sweetalert2.all.min.js"></script>
+
+  <script>
+    let url = 'http://localhost:3000/clientes/';
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+       data() {
+        return {            
+            clientes: [],
+            dialog: false,
+            operacion: '',            
+            cliente:{
+                id: null,
+                name:'',
+                address:'',
+                phone:'',
+                email: '',
+                payDay: ''
+            }          
+        }
+       },
+       created(){               
+            this.mostrar()
+       },  
+       methods:{          
+            //MÉTODOS PARA EL CRUD
+            mostrar:function(){
+              axios.get(url)
+              .then(response =>{
+                this.clientes = response.data;                   
+              })
+            },
+            crear:function(){
+                let parametros = {name:this.cliente.name, address:this.cliente.address, phone:this.cliente.phone, email:this.cliente.email, payDay:this.cliente.payDay, };                
+                axios.post(url, parametros)
+                .then(response =>{
+                  this.mostrar();
+                });     
+                this.cliente.name ='';
+                this.cliente.address ='';
+                this.cliente.phone = '';
+                this.cliente.email = '';
+                this.cliente.payDay = '';
+            },                        
+            editar: function(){
+            let parametros = {name:this.cliente.name, address:this.cliente.address, phone:this.cliente.phone, email:this.cliente.email, payDay:this.cliente.payDay, id:this.cliente.id};                            
+            //console.log(parametros);                   
+                 axios.put(url+this.cliente.id, parametros)                            
+                  .then(response => {                                
+                     this.mostrar();
+                  })                
+                  .catch(error => {
+                      console.log(error);            
+                  });
+            },
+            borrar:function(id){
+             Swal.fire({
+                title: '¿Confirma eliminar el registro?',   
+                confirmButtonText: `Confirmar`,                  
+                showCancelButton: true,                          
+              }).then((result) => {                
+                if (result.isConfirmed) {      
+                      //procedimiento borrar
+                      axios.delete(url+id)
+                      .then(response =>{           
+                          this.mostrar();
+                       });      
+                      Swal.fire('¡Eliminado!', '', 'success')
+                } else if (result.isDenied) {                  
+                }
+              });              
+            },
+
+            //Botones y formularios
+            guardar:function(){
+              if(this.operacion=='crear'){
+                this.crear();                
+              }
+              if(this.operacion=='editar'){ 
+                this.editar();                           
+              }
+              this.dialog=false;                        
+            }, 
+            formNuevo:function () {
+              this.dialog=true;
+              this.operacion='crear';
+              this.cliente.name ='';
+                this.cliente.address ='';
+                this.cliente.phone = '';
+                this.cliente.email = '';
+                this.cliente.payDay = '';
+            },
+            formEditar:function(id, name, address, phone, email, payDay){              
+              this.cliente.id = id;
+              this.cliente.name = name;
+              this.cliente.address = address;
+              this.cliente.phone = phone;
+              this.cliente.email = email;
+              this.cliente.payDay = payDay;                     
+              this.dialog=true;                            
+              this.operacion='editar';
+            }
+       }      
+    });
+  </script>
+</body>
+</html> 
