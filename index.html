@@ -6,10 +6,28 @@
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.2/dist/sweetalert2.min.css">  
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <title>Gestión de Clientes</title>
   <style>
   #app{
-      background-color:#CFD8DC;      
+      background-color:#a3dbf3;      
   }
+
+  .v-btn--fab.v-size--small {
+    height: 30px;
+    width: 30px;
+}
+
+.v-application .text-center {
+    text-align: center!important;
+}
+.v-application .mt-3 {
+    margin-top: 12px!important;
+}
+
+.theme--light.v-application {
+  color:rgba(0,0,100, 0.87);
+}
+
   </style>
 </head>
 <body>
@@ -17,14 +35,19 @@
     <v-app>
       <v-main> 
         
-        <h2 class="text-center mt-3">Bienvenid@ al Sistema de Gestión de Clientes</h2>
+        <h2 class="text-center mt-5">Bienvenid@ al Sistema de Gestión de Clientes</h2>
        
        <!-- Botón "Alta de Cliente" -->                
-        <v-card class="mx-auto mt-5" color="transparent" max-width="1300" elevation="0">            
-        <v-btn class="mx-4 raised" style="background-color:#57c5f5 ;" @click="formNuevo()">Alta de Cliente</v-btn>
+        <v-card class="mx-auto mt-5" color="transparent" max-width="1300" elevation="0">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn class="mx-4 raised blue" dark small fab v-bind="attrs" v-on="on" @click="formNuevo()"><v-icon>mdi-plus</v-icon></v-btn>
+            </template>
+            <span>Agregar Cliente</span>
+          </v-tooltip>
         
         <!-- Tabla y formulario -->
-        <v-simple-table class="mt-5">
+        <v-simple-table class="mt-5 mx-3">
             <template v-slot:default>
                 <thead class="text-center">
                     <tr class="blue darken-2">
@@ -33,8 +56,8 @@
                         <th class="white--text">DIRECCIÓN</th>
                         <th class="white--text">TELÉFONO</th>
                         <th class="white--text">CORREO ELECTRÓNICO</th>
-                        <th class="white--text">DÍA DE PAGO</th>
-                        <th class="white--text text-center">MODIFICACIONES</th>
+                        <!-- <th class="white--text">DÍA DE PAGO</th> -->
+                        <th class="white--text text-center">ACCIONES</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,11 +67,26 @@
                     <td>{{ cliente.address }}</td>
                     <td>{{ cliente.phone }}</td>
                     <td>{{ cliente.email }}</td>
-                    <td>{{ cliente.payDay }}</td>
+                    <!-- <td>{{ cliente.payDay.toLocaleString("DD-MM-YY") }}</td> -->
                     <td>
                       <div class="text-center">
-                        <v-btn class="blue mx-2" dark small fab  @click="formEditar(cliente.id, cliente.name, cliente.address, cliente.phone, cliente.email, cliente.payDay )"><v-icon>mdi-pencil</v-icon></v-btn>
-                        <v-btn class="error mx-2" fab dark small @click="borrar(cliente.id)"><v-icon>mdi-delete</v-icon></v-btn>
+                        <v-tooltip bottom>
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn class="blue mx-2" dark small fab v-bind="attrs" v-on="on" @click="formEditar(cliente.id, cliente.name, cliente.address, cliente.phone, cliente.email, cliente.payDay )">
+                              <v-icon>mdi-pencil</v-icon>
+                            </v-btn>
+                          </template>
+                          <span>Editar cliente</span>
+                        </v-tooltip>
+                        
+                        <v-tooltip bottom>
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn class="error mx-2" v-bind="attrs" v-on="on" fab dark small @click="borrar(cliente.id)">
+                              <v-icon>mdi-delete</v-icon>
+                            </v-btn>
+                          </template>
+                          <span>Eliminar Cliente</span>
+                        </v-tooltip>
                       </div>  
                       </td>
                     </tr>
@@ -59,7 +97,7 @@
       <!-- Componente de Diálogo para CREAR y EDITAR -->
       <v-dialog v-model="dialog" max-width="700">        
         <v-card>
-          <v-card-title class="blue darken-4 white--text">Nuevo Cliente</v-card-title>    
+          <v-card-title class="blue darken-4 white--text">{{ formTitle }}</v-card-title>    
           <v-card-text>            
             <v-form>             
               <v-container>
@@ -101,6 +139,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.2/dist/sweetalert2.all.min.js"></script>
 
   <script>
+    
     let url = 'http://localhost:3000/clientes/';
     new Vue({
       el: '#app',
@@ -109,7 +148,8 @@
         return {            
             clientes: [],
             dialog: false,
-            operacion: '',            
+            operacion: '', 
+            formTitle: '',           
             cliente:{
                 id: null,
                 name:'',
@@ -128,7 +168,8 @@
             mostrar:function(){
               axios.get(url)
               .then(response =>{
-                this.clientes = response.data;                   
+                this.clientes = response.data; 
+                console.log(this.clientes[0].payDay);                  
               })
             },
             crear:function(){
@@ -183,6 +224,7 @@
               this.dialog=false;                        
             }, 
             formNuevo:function () {
+              this.formTitle = 'Agregar Cliente';
               this.dialog=true;
               this.operacion='crear';
               this.cliente.name ='';
@@ -191,7 +233,8 @@
                 this.cliente.email = '';
                 this.cliente.payDay = '';
             },
-            formEditar:function(id, name, address, phone, email, payDay){              
+            formEditar:function(id, name, address, phone, email, payDay){ 
+              this.formTitle = 'Editar Cliente';             
               this.cliente.id = id;
               this.cliente.name = name;
               this.cliente.address = address;
