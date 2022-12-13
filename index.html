@@ -1,41 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.2/dist/sweetalert2.min.css">  
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
   <title>Gestión de Clientes</title>
-  <style>
-  #app{
-      background-color:#a3dbf3;      
-  }
-
-  .v-btn--fab.v-size--small {
-    height: 30px;
-    width: 30px;
-}
-
-.v-application .text-center {
-    text-align: center!important;
-}
-.v-application .mt-3 {
-    margin-top: 12px!important;
-}
-
-.theme--light.v-application {
-  color:rgba(0,0,100, 0.87);
-}
-
-  </style>
 </head>
 <body>
   <div id="app">
     <v-app>
       <v-main> 
         
-        <h2 class="text-center mt-5">Bienvenid@ al Sistema de Gestión de Clientes</h2>
+        <h2 class="text-center mt-5 main-title">Bienvenidos al Sistema de Gestión de Clientes</h2>
        
        <!-- Botón "Alta de Cliente" -->                
         <v-card class="mx-auto mt-5" color="transparent" max-width="1300" elevation="0">
@@ -51,13 +30,12 @@
             <template v-slot:default>
                 <thead class="text-center">
                     <tr class="blue darken-2">
-                        <th class="white--text">ID</th>
-                        <th class="white--text">NOMBRE COMPLETO</th>
-                        <th class="white--text">DIRECCIÓN</th>
-                        <th class="white--text">TELÉFONO</th>
-                        <th class="white--text">CORREO ELECTRÓNICO</th>
-                        <!-- <th class="white--text">DÍA DE PAGO</th> -->
-                        <th class="white--text text-center">ACCIONES</th>
+                        <th class="white--text table-text-header">ID</th>
+                        <th class="white--text table-text-header">NOMBRE COMPLETO</th>
+                        <th class="white--text table-text-header">DIRECCIÓN</th>
+                        <th class="white--text table-text-header">TELÉFONO</th>
+                        <th class="white--text table-text-header">CORREO ELECTRÓNICO</th>
+                        <th class="white--text text-center table-text-header">ACCIONES</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -81,7 +59,7 @@
                         
                         <v-tooltip bottom>
                           <template v-slot:activator="{ on, attrs }">
-                            <v-btn class="error mx-2" v-bind="attrs" v-on="on" fab dark small @click="borrar(cliente.id)">
+                            <v-btn class="mx-2 custom-error" v-bind="attrs" v-on="on" fab dark small @click="borrar(cliente.id)">
                               <v-icon>mdi-delete</v-icon>
                             </v-btn>
                           </template>
@@ -97,34 +75,33 @@
       <!-- Componente de Diálogo para CREAR y EDITAR -->
       <v-dialog v-model="dialog" max-width="700">        
         <v-card>
-          <v-card-title class="blue darken-4 white--text">{{ formTitle }}</v-card-title>    
+          <v-card-title class="blue darken-4 white--text form-title">{{ formTitle }}</v-card-title>    
           <v-card-text>            
             <v-form>             
               <v-container>
-                <v-row>
+                <v-row class="mt-2">
                   <input v-model="cliente.id" hidden></input>
-                  <v-col cols="12" md="4">
+                  <v-col cols="12" md="6">
                     <v-text-field v-model="cliente.name" label="Nombre" solo required>{{cliente.name}}</v-text-field>
                   </v-col>
-                  <v-col cols="12" md="4">
+                  <v-col cols="12" md="6">
                     <v-text-field v-model="cliente.address" label="Dirección" type="text" solo required></v-text-field>
                   </v-col>
-                  <v-col cols="12" md="4">
+                  <v-col cols="12" md="6">
                     <v-text-field v-model="cliente.phone" label="Teléfono" type="tel" solo required></v-text-field>
                   </v-col>
-                  <v-col cols="12" md="4">
+                  <v-col cols="12" md="6">
                     <v-text-field v-model="cliente.email" label="Email" type="text" solo required></v-text-field>
-                  </v-col>
-                  <v-col cols="12" md="4">
-                    <v-text-field v-model="cliente.payDay" label="Día de Pago" type="tel" solo required></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>            
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="dialog=false" color="grey" dark>Cancelar</v-btn>
-            <v-btn @click="guardar()" type="submit" color="blue accent-3" dark>Guardar</v-btn>
+            <div class="mb-2 buttons">
+              <v-btn @click="dialog=false" color="grey" dark class="action-btn">Cancelar</v-btn>
+            <v-btn @click="guardar()" type="submit" color="blue accent-3" dark class="action-btn">Guardar</v-btn>
+            </div>
           </v-card-actions>
           </v-form>
         </v-card>
@@ -139,7 +116,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.2/dist/sweetalert2.all.min.js"></script>
 
   <script>
-    
+
     let url = 'http://localhost:3000/clientes/';
     new Vue({
       el: '#app',
@@ -168,16 +145,20 @@
             mostrar:function(){
               axios.get(url)
               .then(response =>{
-                this.clientes = response.data; 
-                console.log(this.clientes[0].payDay);                  
+                this.clientes = response.data;                   
               })
             },
             crear:function(){
                 let parametros = {name:this.cliente.name, address:this.cliente.address, phone:this.cliente.phone, email:this.cliente.email, payDay:this.cliente.payDay, };                
-                axios.post(url, parametros)
+                if(this.cliente.name !=='' && this.cliente.address !== '' && this.cliente.phone !== '' && this.cliente.email !== ''){
+                  axios.post(url, parametros)
                 .then(response =>{
                   this.mostrar();
-                });     
+                })
+                .catch(error => {
+                      console.log(error);            
+                  });    
+              }
                 this.cliente.name ='';
                 this.cliente.address ='';
                 this.cliente.phone = '';
@@ -195,23 +176,32 @@
                       console.log(error);            
                   });
             },
-            borrar:function(id){
-             Swal.fire({
-                title: '¿Confirma eliminar el registro?',   
-                confirmButtonText: `Confirmar`,                  
-                showCancelButton: true,                          
-              }).then((result) => {                
-                if (result.isConfirmed) {      
-                      //procedimiento borrar
-                      axios.delete(url+id)
-                      .then(response =>{           
-                          this.mostrar();
-                       });      
-                      Swal.fire('¡Eliminado!', '', 'success')
-                } else if (result.isDenied) {                  
-                }
-              });              
-            },
+            
+          borrar: function(id){
+          Swal.fire({
+          title: '¿Está seguro que desea eliminar el registro?',
+          text: 'Esta acción no se puede revertir',
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Confirmar eliminación',
+          confirmButtonColor: "#0099ff",
+          cancelButtonColor: "#Ea3a3a",
+          cancelButtonText: 'Cancelar',
+          showCloseButton: true,
+          showLoaderOnConfirm: true
+        }).then((result) => {
+          if(result.isConfirmed) {
+            axios.delete(url+id)
+            .then(response =>{           
+              this.mostrar();
+            });     
+            Swal.fire('Eliminado', 'El registro fue eliminado correctamente', 'success')
+          // } else {
+          //   Swal.fire('Cancelado', 'Eliminación cancelada', 'info')
+          // }
+          }
+        })
+      },
 
             //Botones y formularios
             guardar:function(){

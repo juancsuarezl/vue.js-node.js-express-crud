@@ -1,0 +1,53 @@
+#app {
+    background-color:#a3dbf3;      
+}
+
+.v-btn--fab.v-size--small {
+  height: 30px !important;
+  width: 30px !important;
+}
+
+.v-application .text-center {
+  text-align: center!important;
+}
+.v-application .mt-3 {
+  margin-top: 12px!important;
+}
+
+.theme--light.v-application {
+color:rgba(0,0,100, 0.87);
+}
+
+.main-title {
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color:rgba(0,0,100, 0.87);
+}
+
+.table-text-header {
+    font-family:'Trebuchet MS';
+    font-size: 18px;
+}
+
+.v-data-table>.v-data-table__wrapper>table>thead>tr>th {
+    font-size: 16px !important;
+}
+
+.form-title {
+    font-family: 'Trebuchet MS';
+}
+
+.v-sheet.v-card {
+    border-radius: 10px !important;
+}
+
+.action-btn {
+    margin-right: 10px;
+}
+
+.swal2-popup {
+    font-family: 'Trebuchet MS' !important;
+}
+
+.v-btn.custom-error {
+    background-color: #Ea3a3a !important;
+}

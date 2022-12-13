@@ -1,6 +1,8 @@
 const express = require('express');
 const mysql = require('mysql');
 const cors = require('cors');
+const swal = require('sweetalert2');
+
 
 const app = express();
 app.use(express.json());
