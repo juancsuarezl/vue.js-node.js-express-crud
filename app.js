@@ -31,9 +31,9 @@ app.get('/', (req, res) => {
     res.send('Welcome to my app!')
 });
 
-//Mostrar todos los clientes
-app.get('/clientes', (req,res) =>{
-    connection.query('SELECT * FROM clientes', (error, rows)=>{
+//Mostrar todos los productos
+app.get('/productos', (req,res) =>{
+    connection.query('SELECT * FROM productos', (error, rows)=>{
         if(error){
             throw error;
         }else {
@@ -42,9 +42,9 @@ app.get('/clientes', (req,res) =>{
     });
 });
 
-//Mostrar un cliente
-app.get('/clientes/:id', (req,res) =>{
-    connection.query('SELECT * FROM clientes WHERE id = ?', [req.params.id], (error, row)=>{
+//Mostrar un producto
+app.get('/productos/:id', (req,res) =>{
+    connection.query('SELECT * FROM productos WHERE id = ?', [req.params.id], (error, row)=>{
         if(error){
             throw error;
         }else {
@@ -53,10 +53,10 @@ app.get('/clientes/:id', (req,res) =>{
     });
 });
 
-//Insertar un cliente nuevo
-app.post('/clientes', (req, res)=>{
-    let data = { name:req.body.name, address:req.body.address, phone:req.body.phone, email:req.body.email, payDay:req.body.payDay };
-    let sql = 'INSERT INTO clientes SET ?';
+//Insertar un producto nuevo
+app.post('/productos', (req, res)=>{
+    let data = { codigo:req.body.codigo, descripcion:req.body.descripcion, stock:req.body.stock, precio:req.body.precio };
+    let sql = 'INSERT INTO productos SET ?';
     connection.query(sql, data, (error, results)=>{
         if(error){
             throw error;
@@ -66,28 +66,28 @@ app.post('/clientes', (req, res)=>{
     });
 });
 
-//Editar un cliente
-app.put('/clientes/:id', (req,res) =>{
+//Editar un producto
+app.put('/productos/:id', (req,res) =>{
     let id = req.params.id;
-    let name = req.body.name;
-    let address = req.body.address;
-    let phone = req.body.phone;
-    let email = req.body.email;
-    let payDay = req.body.payDay;
+    let codigo = req.body.codigo;
+    let descripcion = req.body.descripcion;
+    let stock = req.body.stock;
+    let precio = req.body.precio;
     
-    let sql = 'UPDATE clientes SET name = ?, address = ?, phone = ?, email = ?, payDay = ? WHERE id = ?';
-    connection.query(sql, [name, address, phone, email, payDay, id], (error, results)=>{
+    let sql = 'UPDATE productos SET codigo = ?, descripcion = ?, stock = ?, precio = ? WHERE id = ?';
+    connection.query(sql, [codigo, descripcion, stock, precio, id], (error, results)=>{
         if(error){
             throw error;
         }else {
             res.send(results);
+            
         }
     });
 });
 
-//Eliminar un cliente
-app.delete('/clientes/:id', (req, res)=>{
-    connection.query('DELETE FROM clientes WHERE id = ?', [req.params.id], (error, results)=>{
+//Eliminar un producto
+app.delete('/productos/:id', (req, res)=>{
+    connection.query('DELETE FROM productos WHERE id = ?', [req.params.id], (error, results)=>{
         if(error){
             throw error;
         }else{

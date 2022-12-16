@@ -6,64 +6,113 @@
   <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.2/dist/sweetalert2.min.css">  
+  <script src="https://kit.fontawesome.com/7979ebd060.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.js" integrity="sha512-nqIFZC8560+CqHgXKez61MI0f9XSTKLkm0zFVm/99Wt0jSTZ7yeeYwbzyl0SGn/s8Mulbdw+ScCG41hmO2+FKw==" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.2/dist/sweetalert2.all.min.js"></script>
+
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-  <title>Gestión de Clientes</title>
+  <title>La Casita de Lorna</title>
 </head>
 <body>
   <div id="app">
     <v-app>
       <v-main> 
+
+        <img class="logo" src="logo-casita-lorna.png" alt="">
         
-        <h2 class="text-center mt-5 main-title">Bienvenidos al Sistema de Gestión de Clientes</h2>
+        <h2 class="text-center mt-5 main-title">La casita de Lorna Pérez</h2>
+        
+        <h2 class="text-center mt-2 main-subtitle">Emprendimiento familiar artesanal de snacks</h2>
        
-       <!-- Botón "Alta de Cliente" -->                
+       <!-- Botón "Alta de Producto" -->                
         <v-card class="mx-auto mt-5" color="transparent" max-width="1300" elevation="0">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn class="mx-4 raised blue" dark small fab v-bind="attrs" v-on="on" @click="formNuevo()"><v-icon>mdi-plus</v-icon></v-btn>
-            </template>
-            <span>Agregar Cliente</span>
-          </v-tooltip>
+          <v-row>
+            <v-col md="8">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn class="mx-4 raised blue" dark small fab v-bind="attrs" v-on="on" @click="formNuevo()"><v-icon>mdi-plus</v-icon></v-btn>
+              </template>
+              <span>Agregar Producto</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn class="mx-4 raised red" dark small fab v-bind="attrs" v-on="on"><v-icon>mdi-file-pdf-box</v-icon></v-btn>
+              </template>
+              <span>Descargar PDF</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn class="mx-4 raised yellow" dark small fab v-bind="attrs" v-on="on"><v-icon>mdi-email</v-icon></v-btn>
+              </template>
+              <span>Envíar por correo</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn class="mx-4 raised green" dark small fab v-bind="attrs" v-on="on"><v-icon>mdi-whatsapp</v-icon></v-btn>
+              </template>
+              <span>Envíar por WhatsApp</span>
+            </v-tooltip>
+          </v-col>
+            <v-col md="4">
+              <form class="d-flex">
+                <input class="form-control me-2 search-input" id="search-input" type="text" placeholder="Buscar producto...">
+                <v-btn class="btn btn-primary search-btn" v-on:click="search">
+                  <v-icon class="search-icon">mdi-magnify</v-icon>
+                </v-btn>
+                <v-btn class="btn btn-primary reset-btn" v-on:click="reset">
+                  <v-icon class="search-icon">mdi-close-thick</v-icon>
+                </v-btn>
+              </form>
+            </v-col>
+          </v-row>
         
         <!-- Tabla y formulario -->
         <v-simple-table class="mt-5 mx-3">
             <template v-slot:default>
                 <thead class="text-center">
-                    <tr class="blue darken-2">
-                        <th class="white--text table-text-header">ID</th>
-                        <th class="white--text table-text-header">NOMBRE COMPLETO</th>
-                        <th class="white--text table-text-header">DIRECCIÓN</th>
-                        <th class="white--text table-text-header">TELÉFONO</th>
-                        <th class="white--text table-text-header">CORREO ELECTRÓNICO</th>
+                    <tr class="header-bg darken-2">
+                        <!-- <th class="white--text table-text-header">ID</th> -->
+                        <th class="white--text text-center table-text-header">CÓD. PRODUCTO</th>
+                        <th class="white--text text-center table-text-header">DESCRIPCIÓN</th>
+                        <th class="white--text text-center table-text-header">STOCK</th>
+                        <th class="white--text text-center table-text-header">PRECIO</th>
                         <th class="white--text text-center table-text-header">ACCIONES</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="cliente in clientes" :key="cliente.id">
-                    <td>{{ cliente.id }}</td>
-                    <td>{{ cliente.name }}</td>
-                    <td>{{ cliente.address }}</td>
-                    <td>{{ cliente.phone }}</td>
-                    <td>{{ cliente.email }}</td>
-                    <!-- <td>{{ cliente.payDay.toLocaleString("DD-MM-YY") }}</td> -->
+                    <tr v-for="producto in productos" :key="producto.id">
+                    <td>{{ producto.codigo }}</td>
+                    <td>{{ producto.descripcion }}</td>
+                    <td class="text-center">{{ producto.stock }}</td>
+                    <td class="text-center">{{ producto.precio }}</td>
                     <td>
                       <div class="text-center">
                         <v-tooltip bottom>
                           <template v-slot:activator="{ on, attrs }">
-                            <v-btn class="blue mx-2" dark small fab v-bind="attrs" v-on="on" @click="formEditar(cliente.id, cliente.name, cliente.address, cliente.phone, cliente.email, cliente.payDay )">
+                            <v-btn class="green mx-2 actions" dark small fab v-bind="attrs" v-on="on">
+                              <v-icon>mdi-eye</v-icon>
+                            </v-btn>
+                          </template>
+                          <span>Ver detalle</span>
+                        </v-tooltip>
+                        <v-tooltip bottom>
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn class="blue mx-2 actions" dark small fab v-bind="attrs" v-on="on" @click="formEditar(producto.id, producto.codigo, producto.descripcion, producto.stock, producto.precio)">
                               <v-icon>mdi-pencil</v-icon>
                             </v-btn>
                           </template>
-                          <span>Editar cliente</span>
+                          <span>Editar producto</span>
                         </v-tooltip>
                         
                         <v-tooltip bottom>
                           <template v-slot:activator="{ on, attrs }">
-                            <v-btn class="mx-2 custom-error" v-bind="attrs" v-on="on" fab dark small @click="borrar(cliente.id)">
+                            <v-btn class="mx-2 custom-error actions" v-bind="attrs" v-on="on" fab dark small @click="borrar(producto.id)">
                               <v-icon>mdi-delete</v-icon>
                             </v-btn>
                           </template>
-                          <span>Eliminar Cliente</span>
+                          <span>Eliminar Producto</span>
                         </v-tooltip>
                       </div>  
                       </td>
@@ -71,6 +120,9 @@
                 </tbody>
             </template>
         </v-simple-table>
+
+        <p class="text-center mt-5">{{ mensaje }}</p>
+
         </v-card>        
       <!-- Componente de Diálogo para CREAR y EDITAR -->
       <v-dialog v-model="dialog" max-width="700">        
@@ -80,18 +132,18 @@
             <v-form>             
               <v-container>
                 <v-row class="mt-2">
-                  <input v-model="cliente.id" hidden></input>
+                  <input v-model="producto.id" hidden></input>
                   <v-col cols="12" md="6">
-                    <v-text-field v-model="cliente.name" label="Nombre" solo required>{{cliente.name}}</v-text-field>
+                    <v-text-field v-model="producto.codigo" label="Código" solo required></v-text-field>
                   </v-col>
                   <v-col cols="12" md="6">
-                    <v-text-field v-model="cliente.address" label="Dirección" type="text" solo required></v-text-field>
+                    <v-text-field v-model="producto.descripcion" label="Descripción" type="text" solo required></v-text-field>
                   </v-col>
                   <v-col cols="12" md="6">
-                    <v-text-field v-model="cliente.phone" label="Teléfono" type="tel" solo required></v-text-field>
+                    <v-text-field v-model="producto.stock" label="Stock" type="number" solo required></v-text-field>
                   </v-col>
                   <v-col cols="12" md="6">
-                    <v-text-field v-model="cliente.email" label="Email" type="text" solo required></v-text-field>
+                    <v-text-field v-model="producto.precio" label="Precio" type="text" solo required></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>            
@@ -106,34 +158,67 @@
           </v-form>
         </v-card>
       </v-dialog>
+
+      <div class="row text-center" style="width:100%;">
+        
+        <ul class="redes">
+          <h2 class="contacto">Contactanos:</h2>
+          <!-- Github -->
+          <li>
+            <a style="color:#0b4fe1 ;" href="https://rb.gy/z0nlyk" target="_blank" role="button">
+              <i class="fa-brands fa-facebook-f fa-lg lg-font"></i>
+            </a>
+          </li>
+      
+          <!-- Github -->
+          <li>
+            <a style="color: #b11d58;" href="https://instagram.com/casitadelornaperez?igshid=YmMyMTA2M2Y=" target="_blank" role="button">
+              <i class="fa-brands fa-instagram fa-lg lg-font"></i>
+            </a>
+          </li>
+      
+          <!-- Google -->
+          <li>
+            <a style="color: #dd4b39;" href="mailto:juancsuarezl@gmail.com" role="button">
+              <i class="fab fa-google fa-lg lg-font"></i>
+            </a>
+          </li>
+      
+          <!-- Whatsapp -->
+          <li>
+            <a style="color: #2bac63;" href="http://api.whatsapp.com/send?phone=541551547978" target="_blank" role="button">
+              <i class="fab fa-whatsapp fa-lg lg-font"></i>
+            </a>
+          </li>
+
+          <h3 class="copyright">&copy; 2022 By Publisis | All Rights Reserved</h3>
+
+        </ul>
+
       </v-main>
     </v-app>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.js" integrity="sha512-nqIFZC8560+CqHgXKez61MI0f9XSTKLkm0zFVm/99Wt0jSTZ7yeeYwbzyl0SGn/s8Mulbdw+ScCG41hmO2+FKw==" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.2/dist/sweetalert2.all.min.js"></script>
-
   <script>
 
-    let url = 'http://localhost:3000/clientes/';
+    let url = 'http://localhost:3000/productos';
     new Vue({
       el: '#app',
       vuetify: new Vuetify(),
        data() {
         return {            
-            clientes: [],
+            productos: [],
             dialog: false,
             operacion: '', 
-            formTitle: '',           
-            cliente:{
+            formTitle: '', 
+            mensaje: '',          
+            producto:{
                 id: null,
-                name:'',
-                address:'',
-                phone:'',
-                email: '',
-                payDay: ''
+                codigo:'',
+                descripcion:'',
+                stock:'',
+                precio: ''
+                
             }          
         }
        },
@@ -145,12 +230,12 @@
             mostrar:function(){
               axios.get(url)
               .then(response =>{
-                this.clientes = response.data;                   
+                this.productos = response.data;                 
               })
             },
             crear:function(){
-                let parametros = {name:this.cliente.name, address:this.cliente.address, phone:this.cliente.phone, email:this.cliente.email, payDay:this.cliente.payDay, };                
-                if(this.cliente.name !=='' && this.cliente.address !== '' && this.cliente.phone !== '' && this.cliente.email !== ''){
+                let parametros = {codigo:this.producto.codigo, descripcion:this.producto.descripcion, stock:this.producto.stock, precio:this.producto.precio };                
+                if(this.producto.descripcion !== '' && this.producto.stock !== '' && this.producto.precio !== ''){
                   axios.post(url, parametros)
                 .then(response =>{
                   this.mostrar();
@@ -159,16 +244,15 @@
                       console.log(error);            
                   });    
               }
-                this.cliente.name ='';
-                this.cliente.address ='';
-                this.cliente.phone = '';
-                this.cliente.email = '';
-                this.cliente.payDay = '';
+                this.producto.codigo ='';
+                this.producto.descripcion ='';
+                this.producto.stock = '';
+                this.producto.precio = '';
             },                        
-            editar: function(){
-            let parametros = {name:this.cliente.name, address:this.cliente.address, phone:this.cliente.phone, email:this.cliente.email, payDay:this.cliente.payDay, id:this.cliente.id};                            
-            //console.log(parametros);                   
-                 axios.put(url+this.cliente.id, parametros)                            
+            editar: function(id){
+            let parametros = {codigo:this.producto.codigo, descripcion:this.producto.descripcion, stock:this.producto.stock, precio:this.producto.precio,  id:this.producto.id};                            
+            console.log(parametros);                   
+                 axios.put(url + '/'+ this.producto.id, parametros)                            
                   .then(response => {                                
                      this.mostrar();
                   })                
@@ -191,16 +275,27 @@
           showLoaderOnConfirm: true
         }).then((result) => {
           if(result.isConfirmed) {
-            axios.delete(url+id)
+            axios.delete(url + '/' + id)
             .then(response =>{           
               this.mostrar();
             });     
             Swal.fire('Eliminado', 'El registro fue eliminado correctamente', 'success')
-          // } else {
-          //   Swal.fire('Cancelado', 'Eliminación cancelada', 'info')
-          // }
           }
         })
+      },
+
+      search:function(){
+        let valor = document.getElementById('search-input').value;
+        valor = valor.toString().toLowerCase();
+        if(valor !==''){
+          this.productos = this.productos.filter(x => x.descripcion.toLowerCase().includes(valor) || x.codigo.toLowerCase().includes(valor)); 
+        }
+      },
+
+      reset:function(){
+        document.getElementById('search-input').value = '';
+        this.mensaje = '';
+        this.mostrar();
       },
 
             //Botones y formularios
@@ -214,23 +309,22 @@
               this.dialog=false;                        
             }, 
             formNuevo:function () {
-              this.formTitle = 'Agregar Cliente';
+              this.formTitle = 'Agregar Producto';
               this.dialog=true;
               this.operacion='crear';
-              this.cliente.name ='';
-                this.cliente.address ='';
-                this.cliente.phone = '';
-                this.cliente.email = '';
-                this.cliente.payDay = '';
+              this.producto.codigo ='';
+                this.producto.descripcion ='';
+                this.producto.stock = '';
+                this.producto.precio = '';
+        
             },
-            formEditar:function(id, name, address, phone, email, payDay){ 
-              this.formTitle = 'Editar Cliente';             
-              this.cliente.id = id;
-              this.cliente.name = name;
-              this.cliente.address = address;
-              this.cliente.phone = phone;
-              this.cliente.email = email;
-              this.cliente.payDay = payDay;                     
+            formEditar:function(id, codigo, descripcion, stock, precio){ 
+              this.formTitle = 'Editar Producto';             
+              this.producto.id = id;
+              this.producto.codigo = codigo;
+              this.producto.descripcion = descripcion;
+              this.producto.stock = stock;
+              this.producto.precio = precio;                    
               this.dialog=true;                            
               this.operacion='editar';
             }

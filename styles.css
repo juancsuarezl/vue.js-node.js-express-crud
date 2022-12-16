@@ -1,10 +1,40 @@
+@import url('https://fonts.cdnfonts.com/css/bradley-hand-2');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;700&display=swap');
+
 #app {
-    background-color:#a3dbf3;      
+    /* background-color:#a3dbf3;       */
+  background: #d9a7c7;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #fffcdc, #d9a7c7);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #fffcdc, #d9a7c7); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
+.logo {
+  float: left; 
+  padding-left: 20px;
+  padding-top: 20px; 
+  width: 10%;
+}
+
+.header-bg {
+  /* background-color: #7a245c; */
+  background-color:#64a094;
 }
 
 .v-btn--fab.v-size--small {
-  height: 30px !important;
-  width: 30px !important;
+  height: 35px !important;
+  width: 35px !important;
+}
+
+.v-btn--fab.v-size--small.actions {
+  height: 25px !important;
+  width: 25px !important;
+}
+
+.v-btn:not(.v-btn--round).v-size--default {
+  min-width: 40px !important;
+  padding: 0 8px !important;
+  margin-right: 5px;
 }
 
 .v-application .text-center {
@@ -19,9 +49,19 @@ color:rgba(0,0,100, 0.87);
 }
 
 .main-title {
-    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    color:rgba(0,0,100, 0.87);
+    font-family: 'Bradley Hand', sans-serif;
+    /* color:#f72cad; */
+    color:#64a094;
+    font-weight:bold;
+    font-size:40px;
 }
+
+.main-subtitle {
+    font-family: 'Bradley Hand', sans-serif;
+    color:#64a094;
+    font-size:30px;
+}
+
 
 .table-text-header {
     font-family:'Trebuchet MS';
@@ -51,3 +91,78 @@ color:rgba(0,0,100, 0.87);
 .v-btn.custom-error {
     background-color: #Ea3a3a !important;
 }
+
+.actions {
+  display:inline;
+}
+
+.search-input {
+  padding:5px;
+  border: solid 2px #64a094;
+  border-radius:5px;
+  width: 23vw;
+  font-family: 'Montserrat';
+}
+
+.v-data-table>.v-data-table__wrapper>table>thead>tr>th{
+  font-family: 'Montserrat' !important;
+}
+
+.v-data-table>.v-data-table__wrapper>table>tbody>tr>td {
+  font-family: 'Montserrat' !important;
+}
+
+.theme--light.v-btn.v-btn--has-bg.search-btn {
+  background-color: #64a094 !important;
+  color:#ffffff !important;
+}
+
+.theme--light.v-btn.v-btn--has-bg.reset-btn {
+  background-color: #5f5f5f !important;
+  color:#ffffff !important;
+}
+
+.contacto {
+  margin: 10px auto;
+  font-family: 'Bradley Hand', sans-serif;
+  font-size: 30px;
+  color: #64a094;
+
+}
+
+.redes {
+    margin: 20px auto;
+  }
+  
+  .redes li {
+    display: inline;
+    justify-content: center;
+    margin-right: 25px;
+  
+  }
+
+  i.v-icon.mdi {
+    font-size: 18px !important;
+  }
+  
+    .lg-font {
+    font-size: 25px;
+  }
+
+  .fa-lg {
+    font-size: 1.7em !important;
+  }
+  
+  .centered-text {
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  .copyright {
+    margin:30px auto; 
+    font-family:'Montserrat';
+    font-weight: bold !important;
+  }
+  
