@@ -91,7 +91,7 @@
                       <div class="text-center">
                         <v-tooltip bottom>
                           <template v-slot:activator="{ on, attrs }">
-                            <v-btn class="green mx-2 actions" dark small fab v-bind="attrs" v-on="on">
+                            <v-btn class="green mx-2 actions" dark small fab v-bind="attrs" v-on="on" @click="formVerDetalle(producto.id, producto.codigo, producto.descripcion, producto.stock, producto.precio)">
                               <v-icon>mdi-eye</v-icon>
                             </v-btn>
                           </template>
@@ -127,23 +127,23 @@
       <!-- Componente de Diálogo para CREAR y EDITAR -->
       <v-dialog v-model="dialog" max-width="700">        
         <v-card>
-          <v-card-title class="blue darken-4 white--text form-title">{{ formTitle }}</v-card-title>    
+          <v-card-title class="green-bg darken-4 white--text form-title">{{ formTitle }}</v-card-title>    
           <v-card-text>            
             <v-form>             
               <v-container>
                 <v-row class="mt-2">
                   <input v-model="producto.id" hidden></input>
                   <v-col cols="12" md="6">
-                    <v-text-field v-model="producto.codigo" label="Código" solo required></v-text-field>
+                    <v-text-field v-model="producto.codigo" label="Código" outlined required></v-text-field>
                   </v-col>
                   <v-col cols="12" md="6">
-                    <v-text-field v-model="producto.descripcion" label="Descripción" type="text" solo required></v-text-field>
+                    <v-text-field v-model="producto.descripcion" label="Descripción" type="text" outlined required></v-text-field>
                   </v-col>
                   <v-col cols="12" md="6">
-                    <v-text-field v-model="producto.stock" label="Stock" type="number" solo required></v-text-field>
+                    <v-text-field v-model="producto.stock" label="Stock" type="number" outlined required></v-text-field>
                   </v-col>
                   <v-col cols="12" md="6">
-                    <v-text-field v-model="producto.precio" label="Precio" type="text" solo required></v-text-field>
+                    <v-text-field v-model="producto.precio" label="Precio" type="text" outlined required></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>            
@@ -152,7 +152,41 @@
             <v-spacer></v-spacer>
             <div class="mb-2 buttons">
               <v-btn @click="dialog=false" color="grey" dark class="action-btn">Cancelar</v-btn>
-            <v-btn @click="guardar()" type="submit" color="blue accent-3" dark class="action-btn">Guardar</v-btn>
+            <v-btn @click="guardar()" type="submit" color="#64a094" dark class="action-btn green-bg">Guardar</v-btn>
+            </div>
+          </v-card-actions>
+          </v-form>
+        </v-card>
+      </v-dialog>
+
+      <!-- Componente de Diálogo para VER DETALLE -->
+      <v-dialog v-model="dialog2" max-width="700">        
+        <v-card>
+          <v-card-title class="green-bg darken-4 white--text form-title">{{ formDetailTitle }}</v-card-title>    
+          <v-card-text>            
+            <v-form>             
+              <v-container>
+                <v-row class="mt-2">
+                  <input v-model="producto.id" hidden></input>
+                  <v-col cols="12" md="6">
+                    <v-text-field v-model="producto.codigo" label="Código" outlined required readonly></v-text-field>
+                  </v-col>
+                  <v-col cols="12" md="6">
+                    <v-text-field v-model="producto.descripcion" label="Descripción" type="text" outlined required readonly></v-text-field>
+                  </v-col>
+                  <v-col cols="12" md="6">
+                    <v-text-field v-model="producto.stock" label="Stock" type="number" outlined required readonly></v-text-field>
+                  </v-col>
+                  <v-col cols="12" md="6">
+                    <v-text-field v-model="producto.precio" label="Precio" type="text" outlined required readonly></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>            
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <div class="mb-2 buttons">
+              <v-btn @click="dialog2=false" color="#64a094" dark class="action-btn green-bg">Aceptar</v-btn>
             </div>
           </v-card-actions>
           </v-form>
@@ -209,8 +243,10 @@
         return {            
             productos: [],
             dialog: false,
+            dialog2: false,
             operacion: '', 
             formTitle: '', 
+            formDetailTitle: '',
             mensaje: '',          
             producto:{
                 id: null,
@@ -327,6 +363,16 @@
               this.producto.precio = precio;                    
               this.dialog=true;                            
               this.operacion='editar';
+            },
+
+            formVerDetalle:function(id, codigo, descripcion, stock, precio){ 
+              this.formDetailTitle = 'Ver Detalle ' + '(' + codigo + ')';             
+              this.producto.id = id;
+              this.producto.codigo = codigo;
+              this.producto.descripcion = descripcion;
+              this.producto.stock = stock;
+              this.producto.precio = precio;                    
+              this.dialog2=true;                            
             }
        }      
     });
