@@ -1,12 +1,31 @@
 const express = require('express');
+//const url = require('url');
 const mysql = require('mysql');
 const cors = require('cors');
 const swal = require('sweetalert2');
+const multer = require('multer');
+const sharp = require('sharp');
 
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './uploads')
+    },
+    filename: (req, file, cb) => {
+       const ext = file.originalname.split('.').pop();
+       cb(null, `${Date.now()}.${ext}`);
+    }
+})
+
+const upload = multer({ storage });
+
+app.post('/upload', upload.single('file'), (req, res) => {
+    res.send({ data: 'Imagen cargada'});
+})
 
 //Creamos la conexión con la base de datos MySQL
 const connection = mysql.createConnection({
@@ -28,7 +47,10 @@ const connection = mysql.createConnection({
 //Creamos las rutas para nuestra API
 //Ruta de inicio de la app
 app.get('/', (req, res) => {
+    // const blob = new Blob(['hello there']);
+    // console.log(blob);
     res.send('Welcome to my app!')
+
 });
 
 //Mostrar todos los productos
@@ -48,10 +70,30 @@ app.get('/productos/:id', (req,res) =>{
         if(error){
             throw error;
         }else {
+            // const imgURL = URL.createObjectURL(req.params.img);
+            // console.log(imgURL);
             res.send(row);
         }
     });
 });
+
+//Mostrar imagen de un producto
+// app.get('/productos/:id/img', (req,res) =>{
+//     connection.query('SELECT img FROM productos WHERE id = ?', [req.params.id], (error, row)=>{
+//         if(error){
+//             throw error;
+//         }else {
+            
+//             const file = new Blob(
+//                 [res.data], 
+//                 {type: ['image/jpeg', 'image/png'] });
+//                 const fileURL = URL.createObjectURL(file);
+//                 console.log(fileURL);
+//             res.send(row);
+//         }
+//     });
+// });
+
 
 //Insertar un producto nuevo
 app.post('/productos', (req, res)=>{

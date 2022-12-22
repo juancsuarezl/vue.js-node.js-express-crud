@@ -20,7 +20,7 @@
     <v-app>
       <v-main> 
 
-        <img class="logo" src="logo-casita-lorna.png" alt="">
+        <img class="logo" src="uploads/logo-casita-lorna.png" alt="">
         
         <h2 class="text-center mt-5 main-title">La casita de Lorna Pérez</h2>
         
@@ -125,7 +125,7 @@
 
         </v-card>        
       <!-- Componente de Diálogo para CREAR y EDITAR -->
-      <v-dialog v-model="dialog" max-width="700">        
+      <v-dialog v-model="dialog" max-width="750">        
         <v-card>
           <v-card-title class="green-bg darken-4 white--text form-title">{{ formTitle }}</v-card-title>    
           <v-card-text>            
@@ -133,17 +133,24 @@
               <v-container>
                 <v-row class="mt-2">
                   <input v-model="producto.id" hidden></input>
-                  <v-col cols="12" md="6">
-                    <v-text-field v-model="producto.codigo" label="Código" outlined required></v-text-field>
+                  <v-col cols="3">
+                    <v-text-field class="codigo-input" v-model="producto.codigo" label="Código" outlined required></v-text-field>
                   </v-col>
-                  <v-col cols="12" md="6">
-                    <v-text-field v-model="producto.descripcion" label="Descripción" type="text" outlined required></v-text-field>
+                  <v-col cols="9">
+                    <v-text-field class="descripcion-input" v-model="producto.descripcion" label="Descripción" type="text" outlined required></v-text-field>
                   </v-col>
-                  <v-col cols="12" md="6">
-                    <v-text-field v-model="producto.stock" label="Stock" type="number" outlined required></v-text-field>
+                  <v-col cols="3">
+                    <v-text-field class="stock-input" v-model="producto.stock" label="Stock" type="number" outlined required></v-text-field>
                   </v-col>
-                  <v-col cols="12" md="6">
-                    <v-text-field v-model="producto.precio" label="Precio" type="text" outlined required></v-text-field>
+                  <v-col cols="3">
+                    <v-text-field class="precio-input" v-model="producto.precio" label="Precio" type="text" outlined required></v-text-field>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-file-input class="input-file gree-clip"
+                      placeholder ="Inserte una imagen"
+                      outlined
+                      dense>
+                    </v-file-input>
                   </v-col>
                 </v-row>
               </v-container>            
@@ -160,33 +167,44 @@
       </v-dialog>
 
       <!-- Componente de Diálogo para VER DETALLE -->
-      <v-dialog v-model="dialog2" max-width="700">        
+      <v-dialog v-model="dialog2" max-width="850">        
         <v-card>
           <v-card-title class="green-bg darken-4 white--text form-title">{{ formDetailTitle }}</v-card-title>    
           <v-card-text>            
             <v-form>             
               <v-container>
-                <v-row class="mt-2">
-                  <input v-model="producto.id" hidden></input>
-                  <v-col cols="12" md="6">
-                    <v-text-field v-model="producto.codigo" label="Código" outlined required readonly></v-text-field>
+                <v-row>
+                  <v-col class="mt-2 col-10">
+                    <input v-model="producto.id" hidden></input>
+                    <v-col cols="12">
+                      <v-text-field style="width:85%;" v-model="producto.codigo" label="Código" outlined required readonly></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-text-field style="width:85%;" v-model="producto.descripcion" label="Descripción" type="text" outlined required readonly></v-text-field>
+                    </v-col>
+                    <v-row>
+                      <v-col cols="12" md="5" style="margin-left:10px;">
+                        <v-text-field style="width:97%;" v-model="producto.stock" label="Stock" type="number" outlined required readonly></v-text-field>
+                      </v-col>
+                      <v-col cols="12" md="5">
+                        <v-text-field style="width:97%;" v-model="producto.precio" label="Precio" type="text" outlined required readonly></v-text-field>
+                      </v-col>
+                    </v-row>
                   </v-col>
-                  <v-col cols="12" md="6">
-                    <v-text-field v-model="producto.descripcion" label="Descripción" type="text" outlined required readonly></v-text-field>
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <v-text-field v-model="producto.stock" label="Stock" type="number" outlined required readonly></v-text-field>
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <v-text-field v-model="producto.precio" label="Precio" type="text" outlined required readonly></v-text-field>
+                  <v-col class="col-2 img-col">
+                    <v-col cols="12">
+                      <img v-if="isImg" class="img-detail" :src="`./uploads/${this.producto.img}`" alt="Imagen producto"/>
+                      <h4 class="mt-2" v-else>{{ msg }}</h4>
+                      </v-else>
+                    </v-col>
                   </v-col>
                 </v-row>
               </v-container>            
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <div class="mb-2 buttons">
-              <v-btn @click="dialog2=false" color="#64a094" dark class="action-btn green-bg">Aceptar</v-btn>
+            <div class="mb-2 buttons centered-btn">
+              <v-btn @click="dialog2=false" color="#64a094" dark class="action-btn green-bg ok-btn">Aceptar</v-btn>
             </div>
           </v-card-actions>
           </v-form>
@@ -247,13 +265,16 @@
             operacion: '', 
             formTitle: '', 
             formDetailTitle: '',
-            mensaje: '',          
+            mensaje: '', 
+            msg:'',
+            isImg: false,         
             producto:{
                 id: null,
                 codigo:'',
                 descripcion:'',
                 stock:'',
-                precio: ''
+                precio: '',
+                img: '',
                 
             }          
         }
@@ -261,12 +282,13 @@
        created(){               
             this.mostrar()
        },  
+
        methods:{          
             //MÉTODOS PARA EL CRUD
             mostrar:function(){
               axios.get(url)
               .then(response =>{
-                this.productos = response.data;                 
+                this.productos = response.data;                
               })
             },
             crear:function(){
@@ -286,8 +308,7 @@
                 this.producto.precio = '';
             },                        
             editar: function(id){
-            let parametros = {codigo:this.producto.codigo, descripcion:this.producto.descripcion, stock:this.producto.stock, precio:this.producto.precio,  id:this.producto.id};                            
-            console.log(parametros);                   
+            let parametros = {codigo:this.producto.codigo, descripcion:this.producto.descripcion, stock:this.producto.stock, precio:this.producto.precio, img: this.producto.img, id:this.producto.id};                            
                  axios.put(url + '/'+ this.producto.id, parametros)                            
                   .then(response => {                                
                      this.mostrar();
@@ -365,14 +386,23 @@
               this.operacion='editar';
             },
 
-            formVerDetalle:function(id, codigo, descripcion, stock, precio){ 
+            formVerDetalle:function(id, codigo, descripcion, stock, precio, img){ 
               this.formDetailTitle = 'Ver Detalle ' + '(' + codigo + ')';             
               this.producto.id = id;
               this.producto.codigo = codigo;
               this.producto.descripcion = descripcion;
               this.producto.stock = stock;
-              this.producto.precio = precio;                    
-              this.dialog2=true;                            
+              this.producto.precio = precio; 
+              if(this.producto.img === null){
+                this.producto.img = img;
+                this.isImg = true;
+              } else {
+                this.msg = 'Imagen no disponible';
+                this.isImg = false;
+              }
+                                 
+              this.dialog2=true;  
+              console.log(id, img);                          
             }
        }      
     });

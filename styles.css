@@ -47,10 +47,6 @@
   margin-top: 12px!important;
 }
 
-/* .theme--light.v-application {
-color:rgba(0,0,100, 0.87);
-} */
-
 .main-title {
     font-family: 'Bradley Hand', sans-serif;
     /* color:#f72cad; */
@@ -80,9 +76,31 @@ color:rgba(0,0,100, 0.87);
     font-weight: bold;
 }
 
+.v-input__slot {
+  margin-bottom: -10px !important;
+}
+
+.v-file-input.v-input--dense .v-text-field__slot {
+  min-height: 56px !important;
+}
+
+.v-input__prepend-outer .v-icon {
+  color: #64a094 !important;
+  margin-top:15px;
+}
+
+.green-clip:after {
+  color: #64a094 !important;
+}
+
+.mdi-paperclip::before {
+  color: #64a094 !important;
+}
+
 .v-text-field .v-input__control {
   color: #64a094 !important;
   caret-color: #64a094 !important;
+  margin: 5px auto !important;
 }
 
 .v-application--is-ltr .v-text-field .v-label{
@@ -103,8 +121,21 @@ color:rgba(0,0,100, 0.87);
   background-color: #64a094;
 }
 
+.centered-btn {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.ok-btn {
+  width: 15%;
+  font-weight: bold !important;
+  margin-bottom: 20px;
+  margin-top: -40px;
+}
+
 .swal2-popup {
-    font-family: 'Trebuchet MS' !important;
+    font-family: 'Montserrat' !important;
 }
 
 .v-btn.custom-error {
@@ -113,6 +144,15 @@ color:rgba(0,0,100, 0.87);
 
 .actions {
   display:inline;
+}
+
+.img-col {
+  margin: 0 -60px;
+}
+
+.img-detail {
+  width: 160px;
+  height: auto;
 }
 
 .search-input {
@@ -135,6 +175,32 @@ color:rgba(0,0,100, 0.87);
   background-color: #64a094 !important;
   color:#ffffff !important;
 }
+
+.v-dialog__content {
+  height: 90% !important;
+}
+
+.codigo-input {
+  width: 80%;
+}
+
+.descripcion-input {
+  width: 100%;
+}
+
+/* .stock-input {
+  width: 20%;
+}
+
+.precio-input {
+  width: 20%;
+} */
+
+
+
+/* .theme--light.v-input {
+  margin: 5px auto;
+} */
 
 .green-bg.darken-4 {
   background-color: #64a094 !important;
