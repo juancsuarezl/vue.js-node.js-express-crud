@@ -23,13 +23,24 @@
         <img class="logo" src="uploads/logo-casita-lorna.png" alt="">
         
         <h2 class="text-center mt-5 main-title">La casita de Lorna Pérez</h2>
+
+        <!-- <template v-slot:activator="{ on, attrs }"> -->
+          <v-btn v-if="!isLogin" class="btn btn-primary login-btn" @click="loginForm()" style="float:right">
+            Login
+          </v-btn>
+
+          <v-btn v-if="isLogin" class="btn btn-primary logout-btn" v-bind="attrs" v-on="on" @click="setGuest()" style="float:right">
+            Logout
+          </v-btn>
+        <!-- </template> -->
+        
         
         <h2 class="text-center mt-2 main-subtitle">Emprendimiento familiar artesanal de snacks</h2>
        
        <!-- Botón "Alta de Producto" -->                
         <v-card class="mx-auto mt-5" color="transparent" max-width="1300" elevation="0">
           <v-row>
-            <v-col md="8">
+            <v-col v-if="isLogin" md="8">
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn class="mx-4 raised blue" dark small fab v-bind="attrs" v-on="on" @click="formNuevo()"><v-icon>mdi-plus</v-icon></v-btn>
@@ -54,9 +65,10 @@
               </template>
               <span>Envíar por WhatsApp</span>
             </v-tooltip>
+            <p class="welcome-msg">Bienvenido {{ this.user.name }}</p>
           </v-col>
             <v-col md="4">
-              <form class="d-flex">
+              <form class="d-flex mx-5">
                 <input class="form-control me-2 search-input" id="search-input" type="text" placeholder="Buscar producto...">
                 <v-btn class="btn btn-primary search-btn" v-on:click="search">
                   <v-icon class="search-icon">mdi-magnify</v-icon>
@@ -97,7 +109,7 @@
                           </template>
                           <span>Ver detalle</span>
                         </v-tooltip>
-                        <v-tooltip bottom>
+                        <v-tooltip v-if="isLogin" bottom>
                           <template v-slot:activator="{ on, attrs }">
                             <v-btn class="blue mx-2 actions" dark small fab v-bind="attrs" v-on="on" @click="formEditar(producto.id, producto.codigo, producto.descripcion, producto.stock, producto.precio)">
                               <v-icon>mdi-pencil</v-icon>
@@ -106,7 +118,7 @@
                           <span>Editar producto</span>
                         </v-tooltip>
                         
-                        <v-tooltip bottom>
+                        <v-tooltip v-if="isLogin" bottom>
                           <template v-slot:activator="{ on, attrs }">
                             <v-btn class="mx-2 custom-error actions" v-bind="attrs" v-on="on" fab dark small @click="borrar(producto.id)">
                               <v-icon>mdi-delete</v-icon>
@@ -123,7 +135,36 @@
 
         <p class="text-center mt-5">{{ mensaje }}</p>
 
-        </v-card>        
+        </v-card>  
+        
+        <!-- DIALOGO PARA EL LOGIN  -->
+        <v-dialog v-model="dialogLogin" max-width="400">        
+          <v-card>
+            <v-card-title class="green-bg darken-4 white--text form-title">{{ loginFormTitle }}</v-card-title>    
+            <v-card-text>            
+              <v-form>             
+                <v-container>
+                  <v-row class="mt-2"> 
+                    <v-col cols="12">
+                      <v-text-field v-model="user.name" class="user-input" placeholder="Introduzca su nombre de usuario" outlined required></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-text-field v-model="user.password" type="password" class="psw-input"  placeholder="Introduzca su contraseña" type="text" outlined required></v-text-field>
+                    </v-col>
+                    <!-- <p v-if="error" class="error">Has introducido mal el email o la contraseña.</p> -->
+                  </v-row>
+                </v-container>            
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <div class="mb-2 buttons">
+              <v-btn @click="login()" type="submit" color="#64a094" dark class="action-btn green-bg">Ingresar</v-btn>
+              </div>
+            </v-card-actions>
+            </v-form>
+          </v-card>
+        </v-dialog>
+
       <!-- Componente de Diálogo para CREAR y EDITAR -->
       <v-dialog v-model="dialog" max-width="750">        
         <v-card>
@@ -243,7 +284,7 @@
             </a>
           </li>
 
-          <h3 class="copyright">&copy; 2022 By Publisis | All Rights Reserved</h3>
+          <h3 class="copyright">&copy; {{ this.now }} By Publi Sis Soluciones Integrales | Todos los derechos reservados</h3>
 
         </ul>
 
@@ -254,17 +295,25 @@
   <script>
 
     let url = 'http://localhost:3000/productos';
+    let usersUrl = 'http://localhost:3000/users';
     new Vue({
       el: '#app',
       vuetify: new Vuetify(),
        data() {
         return {            
             productos: [],
+            users: [],
             dialog: false,
             dialog2: false,
+            dialogLogin: false,
             operacion: '', 
             formTitle: '', 
             formDetailTitle: '',
+            loginFormTitle: '',
+            isLogin: false,
+            isGuest: false,
+            user:'',
+            password:'',
             mensaje: '', 
             msg:'',
             isImg: false,         
@@ -274,16 +323,43 @@
                 descripcion:'',
                 stock:'',
                 precio: '',
-                img: '',
-                
-            }          
+                img: '',   
+            },
+            user: {
+              name: '',
+              password:''
+            }         
         }
        },
        created(){               
             this.mostrar()
-       },  
+       }, 
+       
+       computed: {
+        now (){
+          const timeElapsed = Date.now();
+          const today = new Date(timeElapsed);
+          let year = today.getFullYear();
+          return year;
+          
+        }
+       },
 
-       methods:{          
+       methods:{   
+          //LOGIN
+          login:function(){
+            // let user = this.user.name;
+            // let pass = this.user.password;
+            // console.log(user, pass);
+            this.isLogin = true;
+            console.log(this.user.name, this.user.password);
+            this.dialogLogin = false;
+          },
+
+          setGuest:function(){
+            this.isLogin = false;
+          },
+        
             //MÉTODOS PARA EL CRUD
             mostrar:function(){
               axios.get(url)
@@ -291,6 +367,14 @@
                 this.productos = response.data;                
               })
             },
+            getUsers:function(){
+              axios.get(usersUrl)
+              .then(response =>{
+                this.users = response.data; 
+                console.log(this.users);               
+              })
+            },
+
             crear:function(){
                 let parametros = {codigo:this.producto.codigo, descripcion:this.producto.descripcion, stock:this.producto.stock, precio:this.producto.precio };                
                 if(this.producto.descripcion !== '' && this.producto.stock !== '' && this.producto.precio !== ''){
@@ -365,6 +449,24 @@
               }
               this.dialog=false;                        
             }, 
+
+            loginForm:function(){
+              this.loginFormTitle = 'Escriba su usuario y contraseña';
+              this.dialogLogin = true;
+              let parametros = {name:this.user.name, password:this.user.password };                
+                
+                  axios.get(usersUrl, parametros)
+                .then(response =>{
+                  this.users = response.data;                
+              })
+                .catch(error => {
+                      console.log(error);            
+                  });    
+              
+                this.user.name ='';
+                this.user.password ='';
+            },
+
             formNuevo:function () {
               this.formTitle = 'Agregar Producto';
               this.dialog=true;

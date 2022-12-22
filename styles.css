@@ -15,6 +15,15 @@
   width: 10%;
 }
 
+.login-btn {
+  background-color: #64a094;
+  color: #fff;
+  padding: 10px;
+  font-family: 'Montserrat';
+  margin-right: 44px;
+  border-radius:5px;
+}
+
 .header-bg {
   /* background-color: #7a245c; */
   background-color:#64a094;
@@ -161,6 +170,8 @@
   border-radius:5px;
   width: 23vw;
   font-family: 'Montserrat';
+  
+  
 }
 
 .v-data-table>.v-data-table__wrapper>table>thead>tr>th{
@@ -174,6 +185,28 @@
 .theme--light.v-btn.v-btn--has-bg.search-btn {
   background-color: #64a094 !important;
   color:#ffffff !important;
+}
+
+.theme--light.v-btn.v-btn--has-bg.login-btn {
+  background-color: #64a094 !important;
+  color:#ffffff !important;
+  font-weight: bold;
+  margin-right: 50px;
+}
+
+.theme--light.v-btn.v-btn--has-bg.logout-btn {
+  background-color: #5593f7 !important;
+  color:#ffffff !important;
+  font-weight: bold;
+  margin-right: 30px;
+  font-family:'Montserrat';
+}
+
+.welcome-msg {
+  text-align: center;
+  font-family:'Montserrat'; 
+  margin-top:-25px; 
+  margin-left:60px;
 }
 
 .v-dialog__content {

@@ -53,6 +53,17 @@ app.get('/', (req, res) => {
 
 });
 
+//Mostrar todos los usuarios
+app.get('/users', (req,res) =>{
+    connection.query('SELECT * FROM usuarios', (error, rows)=>{
+        if(error){
+            throw error;
+        }else {
+            res.send(rows);
+        }
+    });
+});
+
 //Mostrar todos los productos
 app.get('/productos', (req,res) =>{
     connection.query('SELECT * FROM productos', (error, rows)=>{
