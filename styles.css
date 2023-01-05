@@ -1,10 +1,15 @@
 @import url('https://fonts.cdnfonts.com/css/bradley-hand-2');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
 #app {
-    /* background-color:#a3dbf3;       */
-  background: #d9a7c7;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #fffcdc, #d9a7c7);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #fffcdc, #d9a7c7); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  /* height:100%;
+  width:100%; */
+  background-image:url("./fondo2.jpeg");
+  background-repeat: no-repeat;
+  background-size: cover;
+   
+  /* background: #d9a7c7;  
+  background: -webkit-linear-gradient(to right, #fffcdc, #d9a7c7); 
+  background: linear-gradient(to right, #fffcdc, #d9a7c7);  */
 
 }
 
@@ -20,7 +25,27 @@
   color: #fff;
   padding: 10px;
   font-family: 'Montserrat';
-  margin-right: 44px;
+  margin-right: 16px !important;
+  border-radius:5px;
+}
+
+.signup-btn {
+  background-color: #1e1f4e;
+  color: #fff;
+  font-weight: 700px !important;
+  padding: 12px;
+  font-family: 'Montserrat';
+  margin-top: -35px !important;
+  margin-right: 16px !important;
+  border-radius:5px;
+}
+
+.register-btn {
+  background-color: #236336 !important;
+  color: #fff !important;
+  padding: 10px;
+  font-family: 'Montserrat';
+  margin-right: 44px !important;
   border-radius:5px;
 }
 
@@ -56,18 +81,24 @@
   margin-top: 12px!important;
 }
 
-.main-title {
+h2.main-title {
     font-family: 'Bradley Hand', sans-serif;
     /* color:#f72cad; */
     color:#64a094;
-    font-weight:bold;
+    font-weight:bold !important;
     font-size:40px;
 }
 
-.main-subtitle {
+h2.main-subtitle {
     font-family: 'Bradley Hand', sans-serif;
     color:#64a094;
     font-size:30px;
+    font-weight:bold !important;
+}
+
+p.welcome-msg.common-user {
+  margin-top: 15px !important;
+  margin-left: -60px !important;
 }
 
 
@@ -82,7 +113,7 @@
 
 .form-title {
     font-family: 'Montserrat';
-    font-weight: bold;
+    /* font-weight: bold !important; */
 }
 
 .v-input__slot {
@@ -128,6 +159,7 @@
 
 .action-btn.green-bg{
   background-color: #64a094;
+  font-weight: bold !important;
 }
 
 .centered-btn {
@@ -141,6 +173,10 @@
   font-weight: bold !important;
   margin-bottom: 20px;
   margin-top: -40px;
+}
+
+.cancel-button {
+  font-weight: bold !important;
 }
 
 .swal2-popup {
@@ -194,8 +230,15 @@
   margin-right: 50px;
 }
 
+.theme--light.v-btn.v-btn--has-bg.signup-btn {
+  background-color: #236336 !important;
+  color:#ffffff !important;
+  font-weight: bold;
+  margin-right: 50px;
+}
+
 .theme--light.v-btn.v-btn--has-bg.logout-btn {
-  background-color: #5593f7 !important;
+  background-color: #2a6156 !important;
   color:#ffffff !important;
   font-weight: bold;
   margin-right: 30px;
@@ -209,8 +252,13 @@
   margin-left:60px;
 }
 
+.user-name {
+  font-weight: bold;
+  font-style: italic;
+}
+
 .v-dialog__content {
-  height: 90% !important;
+  height: 100% !important;
 }
 
 .codigo-input {
@@ -219,6 +267,40 @@
 
 .descripcion-input {
   width: 100%;
+}
+
+.mensaje {
+  font-family: 'Montserrat' !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+}
+
+.login-close {
+  background-color: transparent !important;
+  position: absolute;
+  float: right;
+  margin-right: 10px;
+  
+}
+
+.signup-close {
+  background-color: transparent !important;
+  position: absolute;
+  float: right;
+  margin-right: 10px;
+  
+}
+
+.v-btn>.v-btn__content .v-icon.login-close-icon {
+  color: #fff !important;
+}
+
+.v-btn>.v-btn__content .v-icon.signup-close-icon {
+  color: #fff !important;
+}
+
+.v-btn.login-btn {
+  margin-bottom: 15px !important;
 }
 
 /* .stock-input {
@@ -239,9 +321,17 @@
   background-color: #64a094 !important;
 }
 
+.dark-blue-bg.darken-4 {
+  background-color: #236336 !important;
+}
+
 .theme--light.v-btn.v-btn--has-bg.reset-btn {
   background-color: #5f5f5f !important;
   color:#ffffff !important;
+}
+
+.v-sheet.v-card {
+  border-radius: 2px !important;
 }
 
 .theme--light.v-input {
@@ -270,6 +360,10 @@
   i.v-icon.mdi {
     font-size: 18px !important;
   }
+
+  /* i.v-icon.mdi-eye {
+    background-color: #64a094 !important;
+  } */
   
     .lg-font {
     font-size: 25px;
@@ -287,7 +381,7 @@
   }
 
   .copyright {
-    margin:30px auto; 
+    margin:15px auto; 
     font-family:'Montserrat';
     font-weight: bold !important;
   }
