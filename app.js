@@ -64,6 +64,19 @@ app.get('/users', (req,res) =>{
     });
 });
 
+//Insertar un usuario nuevo
+app.post('/users', (req, res)=>{
+    let data = { name:req.body.name, email:req.body.email, password:req.body.password, isAdmin:0 };
+    let sql = 'INSERT INTO usuarios SET ?';
+    connection.query(sql, data, (error, results)=>{
+        if(error){
+            throw error;
+        }else {
+            res.send(results);
+        }
+    });
+});
+
 //Mostrar todos los productos
 app.get('/productos', (req,res) =>{
     connection.query('SELECT * FROM productos', (error, rows)=>{

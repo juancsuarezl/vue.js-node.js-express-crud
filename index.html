@@ -83,12 +83,12 @@
               </template>
               <span>Envíar por WhatsApp</span>
             </v-tooltip>
-            <p  class="welcome-msg">Bienvenido(a) <span class="user-name">{{ this.user }}</span></p>
+            <p  class="welcome-msg">Bienvenido(a) <span class="user-name">{{ this.usuario }}</span></p>
           </v-col>
 
           <!-- Usuario Común -->
           <v-col v-if="isLogin && !isAdmin" md="8">
-            <p class="welcome-msg common-user">Bienvenido(a) <span class="user-name">{{ this.user }}</span></p>
+            <p class="welcome-msg common-user">Bienvenido(a) <span class="user-name">{{ this.usuario }}</span></p>
           </v-col>
           
           <!-- Buscador de Productos -->
@@ -205,7 +205,7 @@
         <!-- DIALOGO PARA EL REGISTRO  -->
         <v-dialog v-model="dialogRegister" max-width="500" max-height="700">        
           <v-card>
-            <v-card-title class="dark-blue-bg darken-4 white--text form-title">ALTA DE USUARIO 
+            <v-card-title class="dark-blue-bg darken-4 white--text form-title">Alta de usuario
               <v-spacer></v-spacer>
               <span>
                 <v-btn elevation="0" class="signup-close" v-on:click="dialogRegister = false">
@@ -218,18 +218,15 @@
                 <v-container>
                   <v-row class="mt-2"> 
                     <v-col cols="12">
-                      <v-text-field type="text" v-model="name" class="user-input" placeholder="Nombre Completo" outlined required>
+                      <v-text-field type="text" v-model="user.name" class="user-input" placeholder="Nombre Completo" outlined required>
                       </v-text-field>
                     </v-col>
                     <v-col cols="12">
-                      <v-text-field type="text" v-model="username" class="user-input" placeholder="Correo Electrónico" outlined required>
+                      <v-text-field type="text" v-model="user.email" class="user-input" placeholder="Correo Electrónico" outlined required>
                       </v-text-field>
                     </v-col>
                     <v-col cols="12">
-                      <v-text-field v-model="password" type="password" class="psw-input"  placeholder="Contraseña" type="text" outlined required></v-text-field>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-text-field v-model="passwordConfirm" type="password" class="psw-input"  placeholder="Confirme Contraseña" outlined required></v-text-field>
+                      <v-text-field v-model="user.password" type="password" class="psw-input"  placeholder="Contraseña" type="text" outlined required></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>            
@@ -237,7 +234,7 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <div class="mb-2 buttons centered-btn">
-              <v-btn onclick="signup()" type="submit" color="#236336" dark class="action-btn signup-btn">
+              <v-btn @click="signup()" type="submit" color="#236336" dark class="action-btn signup-btn">
                 Envíar
               </v-btn>
               </div>
@@ -395,7 +392,7 @@
             isAdmin: false,
             isLogin: false,
             isGuest: false,
-            user: '',
+            usuario: '',
             name: '',
             username:'',
             password:'',
@@ -417,7 +414,10 @@
             },
             user: {
               name: '',
-              password:''
+              password:'',
+              passwordConfirm: '',
+              email: '',
+              isAdmin: ''
             }         
         }
        },
@@ -439,8 +439,51 @@
        methods:{ 
           //SIGNUP (ALTA DE USUARIO)
           signup:function(){
-            //TODO: Lógica de registro de usuario (insert en la base)
-            console.log('Registro exitoso...');
+            let parametros = {name:this.user.name, email:this.user.email, password:this.user.password, isAdmin: 0 };  
+            if(this.user.name == '' || this.user.email == '' || this.user.password == ''){
+              Swal.fire({
+                    title:'',
+                    text:'Todos los campos son obligatorios', 
+                    icon:'error',
+                    confirmButtonColor: "#236336"
+                  });
+            } else {
+                let dbUser = this.users.filter(x => x.email == parametros.email);
+                console.log(parametros.email, dbUser.length);
+                if (dbUser.length > 0){
+                  Swal.fire({
+                    title: 'Error al registrar usuario nuevo',
+                    text: 'El usuario ya se encuentra registrado, inicie sesión para continuar...',
+                    icon: 'error',
+                    confirmButtonColor: "#236336"
+                  })
+                } else {
+                  axios.post(usersUrl, parametros)
+                    .then(response =>{
+                    this.getUsers();
+                    this.usuario = parametros.name;
+                    this.isLogin = true;
+                    Swal.fire({
+                    title:'Alta de usuario', 
+                    text:'Registro exitoso!', 
+                    icon:'success',
+                    iconColor: "#236336",
+                    confirmButtonColor: "#236336"
+                  });
+
+                this.user.name ='';
+                this.user.email ='';
+                this.user.password = '';
+                this.user.passwordConfirm = '';
+            
+                this.dialogRegister = false;
+
+                })
+                .catch(error => {
+                      console.log(error);            
+                }); 
+              }      
+            }
           },
         
           //LOGIN
@@ -457,10 +500,10 @@
           
             } else {
               const user = this.users.filter(x => x.email === this.username && x.password === this.password);
-              console.log(user);
+              
               if(user.length === 1){
                 this.isLogin = true;
-                this.user = user[0].name;
+                this.usuario = user[0].name;
                 this.adminRole = user[0].isAdmin;
                 if(this.adminRole === 0){
                   this.isAdmin = false;
@@ -469,12 +512,12 @@
                 }
                 this.dialogLogin = false;
               } else {
-                Swal.fire(
-                'Usuario no encontrado',
-                'Los datos de ingreso son incorrectos',
-                'warning'
-              )
-              
+                Swal.fire({
+                  title:'Usuario no encontrado',
+                  text: 'Los datos de ingreso son incorrectos',
+                  icon:'warning'
+                });
+
               }
             } 
             
@@ -498,7 +541,7 @@
               axios.get(usersUrl)
               .then(response =>{
                 this.users = response.data; 
-                console.log(this.users);               
+                               
               })
             },
 
@@ -565,7 +608,6 @@
         valor = valor.toString().toLowerCase();
         if(valor !==''){
           this.productos = this.productos.filter(x => x.descripcion.toLowerCase().includes(valor) || x.codigo.toLowerCase().includes(valor)); 
-          console.log(this.productos.length);
           if(this.productos.length == 0){
             this.noProducts = true;
             this.mensaje = 'No hay stock disponible actualmente para el producto solicitado';
@@ -592,6 +634,10 @@
 
             registerForm:function(){
               this.dialogRegister = true;
+              this.user.name ='';
+              this.user.email ='';
+              this.user.password = '';
+              this.user.isAdmin = '';
               // let parametros = {name:this.name,  password:this.user.password };
             },
 
@@ -617,9 +663,9 @@
               this.dialog=true;
               this.operacion='crear';
               this.producto.codigo ='';
-                this.producto.descripcion ='';
-                this.producto.stock = '';
-                this.producto.precio = '';
+              this.producto.descripcion ='';
+              this.producto.stock = '';
+              this.producto.precio = '';
         
             },
             formEditar:function(id, codigo, descripcion, stock, precio){ 
